@@ -1017,6 +1017,18 @@
         (event.key === 'c' || event.key === 'C' || event.code === 'KeyC');
     }
 
+    function getFullscreenShortcutLabel() {
+      return getShortcutModifierLabel() + '+3';
+    }
+
+    function matchesFullscreenShortcut(event) {
+      return event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey &&
+        (event.code === 'Digit3' || event.key === '3');
+    }
+
     function isFullscreenSupported() {
       return Boolean(wrapper && (
         wrapper.requestFullscreen ||
@@ -1075,6 +1087,8 @@
       var titleKey = supported
         ? (fullscreenActive ? 'fullscreenExitTitle' : 'fullscreenButtonTitle')
         : 'fullscreenUnsupported';
+      var shortcutLabel = getFullscreenShortcutLabel();
+      var shortcutSuffix = supported ? ' (' + shortcutLabel + ')' : '';
 
       fullscreenButton.textContent = window.i18n
         ? i18n.t(labelKey)
@@ -1084,6 +1098,7 @@
         : (supported
           ? (fullscreenActive ? 'Exit full screen mode' : 'Expand editor to full screen')
           : 'Full screen is not supported in this browser');
+      fullscreenButton.title += shortcutSuffix;
       fullscreenButton.setAttribute('aria-pressed', fullscreenActive ? 'true' : 'false');
     }
 
@@ -1891,6 +1906,11 @@
       if (matchesCopyShortcut(event)) {
         event.preventDefault();
         executeCopyAction();
+      }
+
+      if (matchesFullscreenShortcut(event)) {
+        event.preventDefault();
+        toggleFullscreen();
       }
 
       if (matchesTabShortcut(event, 1)) {

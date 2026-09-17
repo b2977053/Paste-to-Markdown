@@ -47,7 +47,8 @@
       copyShortcut: '<code>' + copyModifier + '+C</code>',
       pasteShortcut: '<code>' + copyModifier + '+V</code>',
       editShortcut: '<code>' + tabModifier + '+1</code>',
-      previewShortcut: '<code>' + tabModifier + '+2</code>'
+      previewShortcut: '<code>' + tabModifier + '+2</code>',
+      fullscreenShortcut: '<code>' + tabModifier + '+3</code>'
     };
   };
 
