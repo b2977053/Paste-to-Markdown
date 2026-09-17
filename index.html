@@ -49,7 +49,7 @@
             },
             "softwareHelp": "https://github.com/doggy8088/Paste-to-Markdown/issues",
             "codeRepository": "https://github.com/doggy8088/Paste-to-Markdown",
-            "softwareVersion": "1.0.2",
+            "softwareVersion": "1.0.3",
             "featureList": [
                 "Convert copied HTML to Markdown",
                 "Convert RTF and Microsoft Office content to Markdown",
@@ -622,6 +622,31 @@
             display: none;
         }
 
+        .editor-panel:fullscreen,
+        .editor-panel.is-fullscreen {
+            background: var(--surface);
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            height: 100vh;
+            margin: 0;
+            max-width: none;
+            min-height: 100vh;
+            width: 100vw;
+        }
+
+        .editor-panel:fullscreen .editor-topbar,
+        .editor-panel.is-fullscreen .editor-topbar {
+            padding: 16px 18px;
+        }
+
+        .editor-panel:fullscreen #output,
+        .editor-panel:fullscreen #preview,
+        .editor-panel.is-fullscreen #output,
+        .editor-panel.is-fullscreen #preview {
+            min-height: 0;
+        }
+
         .editor-topbar {
             align-items: center;
             background: var(--editor-topbar-bg);
@@ -671,7 +696,8 @@
         }
 
         .share-button,
-        .copy-button {
+        .copy-button,
+        .fullscreen-button {
             background: var(--surface-subtle);
             border: 1px solid var(--border);
             border-radius: 8px;
@@ -687,16 +713,25 @@
         .share-button:hover,
         .share-button:focus-visible,
         .copy-button:hover,
-        .copy-button:focus-visible {
+        .copy-button:focus-visible,
+        .fullscreen-button:hover,
+        .fullscreen-button:focus-visible {
             background: var(--accent-soft);
             border-color: var(--accent);
             color: var(--accent-strong);
         }
 
         .share-button:disabled,
-        .copy-button:disabled {
+        .copy-button:disabled,
+        .fullscreen-button:disabled {
             cursor: not-allowed;
             opacity: 0.6;
+        }
+
+        .fullscreen-button[aria-pressed="true"] {
+            background: var(--accent-soft);
+            border-color: var(--accent);
+            color: var(--accent-strong);
         }
 
         .tab-content {
@@ -893,7 +928,8 @@
             }
 
             .topbar-actions .share-button,
-            .topbar-actions .copy-button {
+            .topbar-actions .copy-button,
+            .topbar-actions .fullscreen-button {
                 flex: 1;
             }
         }
@@ -985,6 +1021,7 @@
                     <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="preview-tab" data-tab="preview" data-i18n="tabPreview">👀 Preview</button>
                 </div>
                 <div class="topbar-actions">
+                    <button id="fullscreen-button" class="fullscreen-button" type="button" data-i18n="fullscreenButton" aria-pressed="false" title="Expand editor to full screen">⛶ Full screen</button>
                     <button id="copy-button" class="copy-button" type="button" data-i18n="copyButton">📋 Copy</button>
                     <button id="share-button" class="share-button" type="button" data-i18n="shareButton">🔗 Share</button>
                 </div>
@@ -1007,7 +1044,7 @@
                             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
                         </svg>
                     </a>
-                    <span class="app-version" title="Version v1.0.2">v1.0.2</span>
+                    <span class="app-version" title="Version v1.0.3">v1.0.3</span>
                 </div>
             </div>
         </footer>
@@ -1019,22 +1056,22 @@
 <script src="vendor/marked/marked.min.js"></script>
 <script src="vendor/katex/katex.min.js"></script>
 
-<script src="./i18n/en.js?v=20260601-platform"></script>
-<script src="./i18n/ar.js?v=20260601-platform"></script>
-<script src="./i18n/tr.js?v=20260601-platform"></script>
-<script src="./i18n/zh.js?v=20260601-platform"></script>
-<script src="./i18n/zh-cn.js?v=20260601-platform"></script>
-<script src="./i18n/ko.js?v=20260601-platform"></script>
-<script src="./i18n/ja.js?v=20260601-platform"></script>
-<script src="./i18n/es.js?v=20260601-platform"></script>
-<script src="./i18n/pt.js?v=20260601-platform"></script>
-<script src="./i18n/th.js?v=20260601-platform"></script>
-<script src="./i18n/vi.js?v=20260601-platform"></script>
-<script src="./i18n/ru.js?v=20260601-platform"></script>
-<script src="./i18n/fr.js?v=20260601-platform"></script>
-<script src="./i18n/id.js?v=20260601-platform"></script>
-<script src="./i18n/hi.js?v=20260601-platform"></script>
-<script src="./i18n/index.js?v=20260601-platform"></script>
+<script src="./i18n/en.js?v=20260917-fullscreen"></script>
+<script src="./i18n/ar.js?v=20260917-fullscreen"></script>
+<script src="./i18n/tr.js?v=20260917-fullscreen"></script>
+<script src="./i18n/zh.js?v=20260917-fullscreen"></script>
+<script src="./i18n/zh-cn.js?v=20260917-fullscreen"></script>
+<script src="./i18n/ko.js?v=20260917-fullscreen"></script>
+<script src="./i18n/ja.js?v=20260917-fullscreen"></script>
+<script src="./i18n/es.js?v=20260917-fullscreen"></script>
+<script src="./i18n/pt.js?v=20260917-fullscreen"></script>
+<script src="./i18n/th.js?v=20260917-fullscreen"></script>
+<script src="./i18n/vi.js?v=20260917-fullscreen"></script>
+<script src="./i18n/ru.js?v=20260917-fullscreen"></script>
+<script src="./i18n/fr.js?v=20260917-fullscreen"></script>
+<script src="./i18n/id.js?v=20260917-fullscreen"></script>
+<script src="./i18n/hi.js?v=20260917-fullscreen"></script>
+<script src="./i18n/index.js?v=20260917-fullscreen"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     if (window.i18n) window.i18n.init();
@@ -1042,7 +1079,7 @@
 </script>
 
 <script src="./assets/to-markdown.js"></script>
-<script src="./assets/clipboard2markdown.js?v=20260904-math"></script>
+<script src="./assets/clipboard2markdown.js?v=20260917-fullscreen"></script>
 
 </body>
 
