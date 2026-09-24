@@ -30,11 +30,9 @@ export async function pasteIntoPastebin(
 }
 
 /**
- * Reads the id of the element currently in fullscreen (or null).
+ * Whether the editor is currently in "focus mode" (page chrome hidden). The
+ * app tracks this state with a `is-fullscreen` class on <body>.
  */
-export function currentFullscreenElementId(page: Page): Promise<string | null> {
-  return page.evaluate(() => {
-    const el = document.fullscreenElement || (document as any).webkitFullscreenElement;
-    return el ? (el as HTMLElement).id : null;
-  });
+export function isFullscreenMode(page: Page): Promise<boolean> {
+  return page.evaluate(() => document.body.classList.contains('is-fullscreen'));
 }
