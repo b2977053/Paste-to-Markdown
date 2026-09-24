@@ -41,6 +41,12 @@ test.describe('fullscreen (focus mode)', () => {
     const topbar = page.locator('.editor-topbar');
     await expect.poll(() => topbar.evaluate((el) => getComputedStyle(el).padding)).toBe('0px');
 
+    // Buttons inside the topbar also have no padding while in focus mode.
+    const tabButton = page.locator('.editor-topbar .tab-button').first();
+    const actionButton = page.locator('.editor-topbar .fullscreen-button');
+    await expect.poll(() => tabButton.evaluate((el) => getComputedStyle(el).padding)).toBe('0px');
+    await expect.poll(() => actionButton.evaluate((el) => getComputedStyle(el).padding)).toBe('0px');
+
     // Exit focus mode: chrome and topbar padding are restored.
     await button.click();
     expect(await isFullscreenMode(page)).toBe(false);
@@ -49,6 +55,8 @@ test.describe('fullscreen (focus mode)', () => {
     await expect(page.locator('.app-header')).toBeVisible();
     await expect(page.locator('.app-footer')).toBeVisible();
     await expect.poll(() => topbar.evaluate((el) => getComputedStyle(el).padding)).not.toBe('0px');
+    await expect.poll(() => tabButton.evaluate((el) => getComputedStyle(el).padding)).not.toBe('0px');
+    await expect.poll(() => actionButton.evaluate((el) => getComputedStyle(el).padding)).not.toBe('0px');
   });
 
   test('Alt+3 keyboard shortcut toggles focus mode', async ({ page }) => {
