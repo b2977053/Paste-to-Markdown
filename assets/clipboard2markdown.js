@@ -888,7 +888,6 @@
     var tabsContainer = document.querySelector('.tabs');
     var themeButtons = document.querySelectorAll('.theme-button');
     var shareButtonBusy = false;
-    var fullscreenButtonBusy = false;
     var copyButtonBusy = false;
     var sharedHashSeed = '';
     var hasEditedFromSharedHash = false;
@@ -1029,51 +1028,19 @@
         (event.code === 'Digit3' || event.key === '3');
     }
 
-    function isFullscreenSupported() {
-      return Boolean(wrapper && (
-        wrapper.requestFullscreen ||
-        wrapper.webkitRequestFullscreen ||
-        document.fullscreenEnabled ||
-        document.webkitFullscreenEnabled
-      ));
-    }
-
-    function getFullscreenElement() {
-      return document.fullscreenElement || document.webkitFullscreenElement || null;
-    }
-
+    // "Fullscreen" here does not use the browser Fullscreen API. Instead it
+    // hides the page chrome (header, intro panel, footer) so the editor fills
+    // the viewport. This produces a clean print of just the editor content.
     function isEditorFullscreen() {
-      return getFullscreenElement() === wrapper;
+      return document.body.classList.contains('is-fullscreen');
     }
 
     function requestEditorFullscreen() {
-      if (!wrapper) {
-        return Promise.reject(new Error('Editor wrapper is not available'));
-      }
-
-      if (wrapper.requestFullscreen) {
-        return wrapper.requestFullscreen();
-      }
-
-      if (wrapper.webkitRequestFullscreen) {
-        wrapper.webkitRequestFullscreen();
-        return Promise.resolve();
-      }
-
-      return Promise.reject(new Error('Fullscreen API is not available'));
+      document.body.classList.add('is-fullscreen');
     }
 
     function exitEditorFullscreen() {
-      if (document.exitFullscreen) {
-        return document.exitFullscreen();
-      }
-
-      if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-        return Promise.resolve();
-      }
-
-      return Promise.reject(new Error('Fullscreen API is not available'));
+      document.body.classList.remove('is-fullscreen');
     }
 
     function refreshFullscreenButtonLabel() {
@@ -1081,61 +1048,38 @@
         return;
       }
 
-      var supported = isFullscreenSupported();
       var fullscreenActive = isEditorFullscreen();
       var labelKey = fullscreenActive ? 'fullscreenExit' : 'fullscreenButton';
-      var titleKey = supported
-        ? (fullscreenActive ? 'fullscreenExitTitle' : 'fullscreenButtonTitle')
-        : 'fullscreenUnsupported';
+      var titleKey = fullscreenActive ? 'fullscreenExitTitle' : 'fullscreenButtonTitle';
       var shortcutLabel = getFullscreenShortcutLabel();
-      var shortcutSuffix = supported ? ' (' + shortcutLabel + ')' : '';
+      var shortcutSuffix = ' (' + shortcutLabel + ')';
 
       fullscreenButton.textContent = window.i18n
         ? i18n.t(labelKey)
         : (fullscreenActive ? '🗗 Exit full screen' : '⛶ Full screen');
       fullscreenButton.title = window.i18n
         ? i18n.t(titleKey)
-        : (supported
-          ? (fullscreenActive ? 'Exit full screen mode' : 'Expand editor to full screen')
-          : 'Full screen is not supported in this browser');
+        : (fullscreenActive ? 'Exit full screen mode' : 'Expand editor to full screen');
       fullscreenButton.title += shortcutSuffix;
       fullscreenButton.setAttribute('aria-pressed', fullscreenActive ? 'true' : 'false');
     }
 
     function syncFullscreenState() {
-      var fullscreenActive = isEditorFullscreen();
-
-      if (wrapper) {
-        wrapper.classList.toggle('is-fullscreen', fullscreenActive);
-      }
-
-      if (fullscreenButton) {
-        fullscreenButton.disabled = fullscreenButtonBusy || !isFullscreenSupported();
-      }
-
       refreshFullscreenButtonLabel();
     }
 
-    async function toggleFullscreen() {
-      if (!fullscreenButton || fullscreenButtonBusy || !isFullscreenSupported()) {
+    function toggleFullscreen() {
+      if (!fullscreenButton) {
         return;
       }
 
-      fullscreenButtonBusy = true;
-      fullscreenButton.disabled = true;
-
-      try {
-        if (isEditorFullscreen()) {
-          await exitEditorFullscreen();
-        } else {
-          await requestEditorFullscreen();
-        }
-      } catch (error) {
-        console.warn('Unable to toggle fullscreen mode.', error);
-      } finally {
-        fullscreenButtonBusy = false;
-        syncFullscreenState();
+      if (isEditorFullscreen()) {
+        exitEditorFullscreen();
+      } else {
+        requestEditorFullscreen();
       }
+
+      syncFullscreenState();
     }
 
     function getClipboardHtml(markdown) {
@@ -1389,8 +1333,6 @@
       });
     }
 
-    document.addEventListener('fullscreenchange', syncFullscreenState);
-    document.addEventListener('webkitfullscreenchange', syncFullscreenState);
     syncFullscreenState();
 
     if (copyButton) {
@@ -1888,6 +1830,7 @@
       }
       if (event.key === 'Escape') {
         if (isEditorFullscreen()) {
+          exitEditorFullscreen();
           return;
         }
 
