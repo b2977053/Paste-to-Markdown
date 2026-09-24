@@ -37,13 +37,18 @@ test.describe('fullscreen (focus mode)', () => {
     await expect(page.locator('.app-footer')).toBeHidden();
     await expect(page.locator('#wrapper')).toBeVisible();
 
-    // Exit focus mode: chrome is restored.
+    // The editor topbar has no padding while in focus mode.
+    const topbar = page.locator('.editor-topbar');
+    await expect.poll(() => topbar.evaluate((el) => getComputedStyle(el).padding)).toBe('0px');
+
+    // Exit focus mode: chrome and topbar padding are restored.
     await button.click();
     expect(await isFullscreenMode(page)).toBe(false);
     await expect(button).toHaveAttribute('aria-pressed', 'false');
     await expect(button).toContainText('Full screen');
     await expect(page.locator('.app-header')).toBeVisible();
     await expect(page.locator('.app-footer')).toBeVisible();
+    await expect.poll(() => topbar.evaluate((el) => getComputedStyle(el).padding)).not.toBe('0px');
   });
 
   test('Alt+3 keyboard shortcut toggles focus mode', async ({ page }) => {
