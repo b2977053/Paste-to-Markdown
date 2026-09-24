@@ -1830,7 +1830,7 @@
       }
       if (event.key === 'Escape') {
         if (isEditorFullscreen()) {
-          exitEditorFullscreen();
+          toggleFullscreen();
           return;
         }
 
